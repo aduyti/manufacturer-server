@@ -29,8 +29,17 @@ async function run() {
     try {
         await client.connect();
         const theBoltsDB = client.db('the-bolts');
+        const boltsCollection = theBoltsDB.collection('bolts');
         const usersCollection = theBoltsDB.collection('users');
 
+        // get all bolts
+        app.get('/bolts', async (req, res) => {
+            const cursor = boltsCollection.find({}).sort({ _id: -1 });
+            const bolts = await cursor.toArray();
+            res.send(bolts);
+        })
+
+        // get all users
         app.get('/users', async (req, res) => {
             const cursor = usersCollection.find({});
             const products = await cursor.toArray();
