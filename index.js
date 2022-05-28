@@ -38,6 +38,12 @@ async function run() {
             const bolts = await cursor.toArray();
             res.send(bolts);
         })
+        // get latest 6 bolts
+        app.get('/6bolts', async (req, res) => {
+            const cursor = boltsCollection.find({}).sort({ _id: -1 }).limit(6);
+            const bolts = await cursor.toArray();
+            res.send(bolts);
+        })
 
         // get all users
         app.get('/users', async (req, res) => {
