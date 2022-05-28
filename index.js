@@ -46,6 +46,14 @@ async function run() {
             const bolts = await cursor.toArray();
             res.send(bolts);
         })
+        // get bolt by id
+        app.get('/bolt/:id', async (req, res) => {
+            let id = req.params.id;
+            id = id.length === 24 ? id : '000000000000000000000000';
+            const query = { _id: ObjectId(id) };
+            const bolt = await boltsCollection.findOne(query);
+            res.send(bolt);
+        })
 
         // get latest 6 reviews
         app.get('/reviews', async (req, res) => {
