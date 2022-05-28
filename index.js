@@ -64,7 +64,18 @@ async function run() {
 
         //add new order
         app.post('/order', async (req, res) => {
-            const order = (req.body);
+            const [order, available] = (req.body);
+            console.log(available)
+
+            const filter = { _id: ObjectId(order.boltID) };
+            const updatedQuantity = {
+                $set: {
+                    Available: available
+                }
+            };
+            const options = { upsert: true };
+            const upResult = await boltsCollection.updateOne(filter, updatedQuantity, options);
+
             const result = await ordersCollection.insertOne(order);
             res.send(result);
         })
