@@ -62,6 +62,13 @@ async function run() {
             res.send(reviews);
         })
 
+        //add new order
+        app.post('/order', async (req, res) => {
+            const order = (req.body);
+            const result = await ordersCollection.insertOne(order);
+            res.send(result);
+        })
+
         // get all users
         app.get('/users', async (req, res) => {
             const cursor = usersCollection.find({});
