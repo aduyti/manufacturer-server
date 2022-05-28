@@ -31,6 +31,7 @@ async function run() {
         const theBoltsDB = client.db('the-bolts');
         const boltsCollection = theBoltsDB.collection('bolts');
         const usersCollection = theBoltsDB.collection('users');
+        const reviewsCollection = theBoltsDB.collection('reviews');
 
         // get all bolts
         app.get('/bolts', async (req, res) => {
@@ -43,6 +44,13 @@ async function run() {
             const cursor = boltsCollection.find({}).sort({ _id: -1 }).limit(6);
             const bolts = await cursor.toArray();
             res.send(bolts);
+        })
+
+        // get latest 6 reviews
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({}).sort({ _id: -1 }).limit(6);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
         })
 
         // get all users
