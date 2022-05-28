@@ -65,7 +65,6 @@ async function run() {
         //add new order
         app.post('/order', async (req, res) => {
             const [order, available] = (req.body);
-            console.log(available)
 
             const filter = { _id: ObjectId(order.boltID) };
             const updatedQuantity = {
@@ -78,6 +77,20 @@ async function run() {
 
             const result = await ordersCollection.insertOne(order);
             res.send(result);
+        })
+
+        app.put('/user', async (req, res) => {
+            const [name, email] = req.body;
+            const filter = { email: email };
+            const data = {
+                $set: {
+                    name: name,
+                    email: email,
+                    admin: false
+                }
+            }
+            const options = { upsert: true };
+            const result = await usersCollection.updateOne(filter, data, options);
         })
 
         // get all users
