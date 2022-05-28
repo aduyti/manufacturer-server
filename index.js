@@ -91,6 +91,7 @@ async function run() {
             }
             const options = { upsert: true };
             const result = await usersCollection.updateOne(filter, data, options);
+            res.send(result);
         })
 
         // get all users
@@ -98,6 +99,13 @@ async function run() {
             const cursor = usersCollection.find({});
             const products = await cursor.toArray();
             res.send(products);
+        })
+
+        // JWT generate
+        app.post('/login', async (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '12h' });
+            res.send({ token });
         })
     }
     finally { }
