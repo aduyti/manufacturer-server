@@ -32,6 +32,7 @@ async function run() {
         const boltsCollection = theBoltsDB.collection('bolts');
         const usersCollection = theBoltsDB.collection('users');
         const reviewsCollection = theBoltsDB.collection('reviews');
+        const ordersCollection = theBoltsDB.collection('orders');
 
         // get all bolts
         app.get('/bolts', async (req, res) => {
