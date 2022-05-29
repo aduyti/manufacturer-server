@@ -85,6 +85,14 @@ async function run() {
             res.send(result);
         })
 
+        // order by email
+        app.get('/myorders/:email', async (req, res) => {
+            const query = { uEmail: req.params.email };
+            const cursor = ordersCollection.find(query);
+            const orders = await cursor.toArray();
+            res.send(orders);
+        })
+
         app.put('/user', async (req, res) => {
             const [name, email] = req.body;
             const filter = { email: email };
