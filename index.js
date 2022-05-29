@@ -65,6 +65,13 @@ async function run() {
             const upResult = await boltsCollection.updateOne(filter, updatedQuantity, options);
 
         })
+        app.get('/order/:id', async (req, res) => {
+            let id = req.params.id;
+            id = id.length === 24 ? id : '000000000000000000000000';
+            const query = { _id: ObjectId(id) };
+            const order = await ordersCollection.findOne(query);
+            res.send(order);
+        })
 
         // get latest 6 reviews
         app.get('/reviews', async (req, res) => {
@@ -133,6 +140,12 @@ async function run() {
             const cursor = usersCollection.find({});
             const products = await cursor.toArray();
             res.send(products);
+        })
+        // get all order
+        app.get('/allorders', async (req, res) => {
+            const cursor = ordersCollection.find({}).sort({ _id: -1 });
+            const orders = await cursor.toArray();
+            res.send(orders);
         })
         // get user by email
         app.get('/user/:email', async (req, res) => {
