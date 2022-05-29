@@ -140,15 +140,10 @@ async function run() {
 
         // order by email
         app.get('/myorders/:email', verifyJWT, async (req, res) => {
-            if (req.decoded.email === req.params.email) {
-                const query = { uEmail: req.params.email };
-                const cursor = ordersCollection.find(query).sort({ _id: -1 });
-                const orders = await cursor.toArray();
-                res.send(orders);
-            }
-            else {
-                res.status(403).send({ message: 'Forbidden' });
-            }
+            const query = { uEmail: req.params.email };
+            const cursor = ordersCollection.find(query).sort({ _id: -1 });
+            const orders = await cursor.toArray();
+            res.send(orders);
         })
 
         app.put('/user', async (req, res) => {
