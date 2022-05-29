@@ -84,11 +84,22 @@ async function run() {
             const result = await ordersCollection.insertOne(order);
             res.send(result);
         })
+        app.put('/orderStatus/:id', async (req, res) => {
+            const filter = { _id: ObjectId(req.params.id) };
+            const status = req.body;
+            console.log(status);
+            const data = {
+                $set: status
+            }
+            const options = { upsert: true };
+            const result = await ordersCollection.updateOne(filter, data, options);
+            res.send(result);
+        })
 
         // order by email
         app.get('/myorders/:email', async (req, res) => {
             const query = { uEmail: req.params.email };
-            const cursor = ordersCollection.find(query);
+            const cursor = ordersCollection.find(query).sort({ _id: -1 });
             const orders = await cursor.toArray();
             res.send(orders);
         })
