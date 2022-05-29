@@ -55,6 +55,17 @@ async function run() {
             res.send(bolt);
         })
 
+        app.put('/boltup/:id', async (req, res) => {
+            const filter = { _id: ObjectId(req.params.id) };
+            const Available = req.body;
+            const updatedQuantity = {
+                $set: Available
+            };
+            const options = { upsert: true };
+            const upResult = await boltsCollection.updateOne(filter, updatedQuantity, options);
+
+        })
+
         // get latest 6 reviews
         app.get('/reviews', async (req, res) => {
             const cursor = reviewsCollection.find({}).sort({ _id: -1 }).limit(6);
@@ -87,7 +98,6 @@ async function run() {
         app.put('/orderStatus/:id', async (req, res) => {
             const filter = { _id: ObjectId(req.params.id) };
             const status = req.body;
-            console.log(status);
             const data = {
                 $set: status
             }
