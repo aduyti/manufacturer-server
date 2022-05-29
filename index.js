@@ -55,6 +55,16 @@ async function run() {
             res.send(bolt);
         })
 
+        app.post('/addbolt', async (req, res) => {
+
+            const bolt = req.body;
+            console.log(bolt);
+            const result = await boltsCollection.insertOne(bolt);
+            res.send(result);
+
+
+        })
+
         app.put('/boltup/:id', async (req, res) => {
             const filter = { _id: ObjectId(req.params.id) };
             const Available = req.body;
@@ -166,7 +176,11 @@ async function run() {
             res.send(result);
         })
 
-
+        app.delete('/bolt/:id', async (req, res) => {
+            const query = { _id: ObjectId(req.params.id) };
+            const result = await boltsCollection.deleteOne(query);
+            res.send(result);
+        })
 
         app.put('/user/:id', async (req, res) => {
             const id = req.params.id;
@@ -179,6 +193,7 @@ async function run() {
             const result = await usersCollection.updateOne(filter, data, options);
             res.send(result);
         })
+
 
         // JWT generate
         app.post('/login', async (req, res) => {
