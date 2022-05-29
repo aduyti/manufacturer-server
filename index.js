@@ -100,6 +100,12 @@ async function run() {
             const products = await cursor.toArray();
             res.send(products);
         })
+        // get user by email
+        app.get('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await usersCollection.findOne({ email: email });
+            res.send(user);
+        })
 
         // JWT generate
         app.post('/login', async (req, res) => {
