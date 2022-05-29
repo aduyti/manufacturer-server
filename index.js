@@ -137,9 +137,9 @@ async function run() {
 
         // get all users
         app.get('/users', async (req, res) => {
-            const cursor = usersCollection.find({});
-            const products = await cursor.toArray();
-            res.send(products);
+            const cursor = usersCollection.find({}).sort({ _id: -1 });
+            const users = await cursor.toArray();
+            res.send(users);
         })
         // get all order
         app.get('/allorders', async (req, res) => {
@@ -153,6 +153,20 @@ async function run() {
             const user = await usersCollection.findOne({ email: email });
             res.send(user);
         })
+
+        app.put('/useradmin/:id', async (req, res) => {
+            const filter = { _id: ObjectId(req.params.id) };
+            const data = {
+                $set: {
+                    admin: true
+                }
+            }
+            const options = { upsert: true };
+            const result = await usersCollection.updateOne(filter, data, options);
+            res.send(result);
+        })
+
+
 
         app.put('/user/:id', async (req, res) => {
             const id = req.params.id;
