@@ -22,6 +22,21 @@ app.use((req, res, next) => {
     }
 });
 
+// AUTH verification
+const verifyJWT = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).send({ message: 'Unauthorized Access' });
+    }
+    jwt.verify(authHeader.split(' ')[1], process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
+        if (error) {
+            return res.status(403).send({ message: "Forbidden Access" });
+        }
+        req.decoded = decoded;
+        next();
+    })
+}
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.2bong.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
@@ -124,11 +139,16 @@ async function run() {
         })
 
         // order by email
-        app.get('/myorders/:email', async (req, res) => {
-            const query = { uEmail: req.params.email };
-            const cursor = ordersCollection.find(query).sort({ _id: -1 });
-            const orders = await cursor.toArray();
-            res.send(orders);
+        app.get('/myorders/:email', verifyJWT, async (req, res) => {
+            if (req.decoded.email === req.params.email) {
+                const query = { uEmail: req.params.email };
+                const cursor = ordersCollection.find(query).sort({ _id: -1 });
+                const orders = await cursor.toArray();
+                res.send(orders);
+            }
+            else {
+                res.status(403).send({ message: 'Forbidden' });
+            }
         })
 
         app.put('/user', async (req, res) => {
