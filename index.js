@@ -85,8 +85,7 @@ async function run() {
             const data = {
                 $set: {
                     name: name,
-                    email: email,
-                    admin: false
+                    email: email
                 }
             }
             const options = { upsert: true };
@@ -105,6 +104,18 @@ async function run() {
             const email = req.params.email;
             const user = await usersCollection.findOne({ email: email });
             res.send(user);
+        })
+
+        app.put('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const user = req.body;
+            const filter = { _id: ObjectId(id) };
+            const data = {
+                $set: user
+            }
+            const options = { upsert: true };
+            const result = await usersCollection.updateOne(filter, data, options);
+            res.send(result);
         })
 
         // JWT generate
